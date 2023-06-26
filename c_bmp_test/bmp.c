@@ -12,8 +12,8 @@ void writePixel(unsigned char* image, int height, int width, int i, int j, int r
 
 int main ()
 {
-    int height = 361;
-    int width = 867;
+    int height = 500;
+    int width = 500;
     unsigned char image[height][width][BYTES_PER_PIXEL];
     char* imageFileName = (char*) "bitmapImage.bmp";
 
@@ -24,7 +24,7 @@ int main ()
             double y = 0;
 
             int iteration = 0;
-            int max_iteration = 1000;
+            int max_iteration = 10000;
             
             while (x*x + y*y <= 4 && iteration < max_iteration) {
                 double xtemp = x*x - y*y + (j - 2.0*height/3.0) / (height/3.0);
@@ -38,9 +38,9 @@ int main ()
             int b = 0;
 
             if (iteration < max_iteration) {
-                r = 255;
-                g = 255;
-                b = 255;
+                r = iteration % 256;
+                g = iteration % 256;
+                b = iteration % 256;
             }
 
             writePixel((unsigned char*) image, height, width, i, j, r, g, b);
