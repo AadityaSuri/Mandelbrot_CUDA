@@ -1,12 +1,85 @@
 #include <stdio.h>
 #include "utils/bitmap.h"
+#include <math.h>
+#include <stdlib.h>
+
+int colorMap[16][3] = {    
+    {60, 30, 15},
+    {25, 7, 26},
+    {9, 1, 47},
+    {4, 4, 73},
+    {0, 7, 100},
+    {12, 44, 138},
+    {24, 82, 177},
+    {57, 125, 209},
+    {134, 181, 229},
+    {211, 236, 248},
+    {241, 233, 191},
+    {248, 201, 95},
+    {255, 170, 0},
+    {204, 128, 0},
+    {153, 87, 0},
+    {106, 52, 3}
+};
+
+// void drawMandelbrotSet(unsigned char* image, int height, int width, int centerX, int centerY) {
+//     double x_min = -2.5; // min value for x
+//     double x_max = 1;    // max value for x
+//     double y_min = -1;   // min value for y
+//     double y_max = 1;    // max value for y
+
+//     int i, j;
+//     for (i = 0; i < height; i++) {
+//         for (j = 0; j < width; j++) {
+//             double x = 0;
+//             double y = 0;
+
+//             int iteration = 0;
+//             int max_iteration = 1000;
+
+//             // scale x and y values based on the min and max values
+//             double x_scaled = x_min + j * (x_max - x_min) / (width - 1.0);
+//             double y_scaled = y_min + i * (y_max - y_min) / (height - 1.0);
+
+//             while (x*x + y*y <= 4 && iteration < max_iteration) {
+//                 double xtemp = x*x - y*y + x_scaled;
+//                 y = 2*x*y + y_scaled;
+//                 x = xtemp;
+//                 iteration++;
+//             }
+
+//             int r = 0; 
+//             int g = 0;
+//             int b = 0;
+
+//             if (iteration < max_iteration) {
+//                 int i = iteration % 16;
+                
+//                 r = colorMap[i][0];
+//                 g = colorMap[i][1];
+//                 b = colorMap[i][2];
+
+//             }
+
+//             if ((x_scaled == 0 && y_scaled != 0) || (x_scaled != 0 && y_scaled == 0) || (x_scaled
+
+
+// }
 
 int main ()
 {
-    int height = 1550;
-    int width = 1800;
+    int height = 1200;
+    int width = 1500;
     unsigned char image[height][width][BYTES_PER_PIXEL];
     char* imageFileName = (char*) "bitmapImage.bmp";
+
+    // drawMandelbrotSet((unsigned char*) image, height, width, 0, 0);
+
+    double padding = 0.025; // specify your padding value
+    double x_min = -0.8 - padding; // min value for x
+    double x_max = -0.6 + padding;    // max value for x
+    double y_min = -0.25 - padding;   // min value for y
+    double y_max = -0.5 + padding;    // max value for y
 
     int i, j;
     for (i = 0; i < height; i++) {
@@ -16,10 +89,14 @@ int main ()
 
             int iteration = 0;
             int max_iteration = 1000;
-            
+
+            // scale x and y values based on the min and max values
+            double x_scaled = x_min + j * (x_max - x_min) / (width - 1.0);
+            double y_scaled = y_min + i * (y_max - y_min) / (height - 1.0);
+
             while (x*x + y*y <= 4 && iteration < max_iteration) {
-                double xtemp = x*x - y*y + (j - 2.0*height/3.0) / (height/3.0);
-                y = 2*x*y + (i - height/2.0) / (height/2.0);
+                double xtemp = x*x - y*y + x_scaled;
+                y = 2*x*y + y_scaled;
                 x = xtemp;
                 iteration++;
             }
@@ -30,116 +107,23 @@ int main ()
 
             if (iteration < max_iteration) {
                 int i = iteration % 16;
-                switch (i)
-                {
-                case 0:
-                    r = 60;
-                    g = 30;
-                    b = 15;
-                    break;
+                
+                r = colorMap[i][0];
+                g = colorMap[i][1];
+                b = colorMap[i][2];
 
-                case 1:
-                    r = 25;
-                    g = 7;
-                    b = 26;
-                    break;
-                
-                case 2:
-                    r = 9;
-                    g = 1;
-                    b = 47;
-                    break;
+            }
 
-                case 3:
-                    r = 4;
-                    g = 4;
-                    b = 73;
-                    break;
-                
-                case 4:
-                    r = 0;
-                    g = 7;
-                    b = 100;
-                    break;
-
-                case 5:
-                    r = 12;
-                    g = 44;
-                    b = 138;
-                    break;
-                
-                case 6:
-                    r = 24;
-                    g = 82;
-                    b = 177;
-                    break;
-
-                case 7:
-                    r = 57;
-                    g = 125;
-                    b = 209;
-                    break;
-
-                case 8:
-                    r = 134;
-                    g = 181;
-                    b = 229;
-                    break;
-
-                case 9:
-                    r = 211;
-                    g = 236;
-                    b = 248;
-                    break;
-                
-                case 10:
-                    r = 241;
-                    g = 233;
-                    b = 191;
-                    break;
-                
-                case 11:
-                    r = 248;
-                    g = 201;
-                    b = 95;
-                    break;
-
-                case 12:
-                    r = 255;
-                    g = 170;
-                    b = 0;
-                    break; 
-                
-                case 13:
-                    r = 204;
-                    g = 128;
-                    b = 0;
-                    break;
-                
-                case 14:
-                    r = 153;
-                    g = 87;
-                    b = 0;
-                    break;
-                
-                case 15:
-                    r = 106;
-                    g = 52;
-                    b = 3;
-                    break;  
-                
-                default:
-                    break;
-                }
-                
-
+            if ((x_scaled == 0 && y_scaled != 0) || (x_scaled != 0 && y_scaled == 0) || (x_scaled == 0 && y_scaled == 0)) {
+                r = 255;
+                g = 255;
+                b = 255;
             }
 
             writePixel((unsigned char*) image, height, width, i, j, r, g, b);
         }
+                
     }
-
-    
 
     generateBitmapImage((unsigned char*) image, height, width, imageFileName);
     printf("Image generated!!");
