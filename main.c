@@ -22,21 +22,18 @@ int colorMap[16][3] = {
     {106, 52, 3}
 };
 
+void drawMandelbrot(unsigned char *image, int height, int width, double centerX, double centerY, double zoomFactor, char *imageFileName) {
+    double padding = 0.025;
 
-int main ()
-{
-    int height = 1200;
-    int width = 1500;
-    unsigned char image[height][width][BYTES_PER_PIXEL];
-    char* imageFileName = (char*) "bitmapImage.bmp";
+    // calculate the x and y spans
+    double xSpan = 1.0 / zoomFactor;
+    double ySpan = 1.0 / zoomFactor;
 
-    // drawMandelbrotSet((unsigned char*) image, height, width, 0, 0);
-
-    double padding = 0.025; // specify your padding value
-    double x_min = -0.8 - padding; // min value for x
-    double x_max = -0.6 + padding;    // max value for x
-    double y_min = -0.25 - padding;   // min value for y
-    double y_max = -0.5 + padding;    // max value for y
+    // calculate min and max x and y based on the center coordinates and zoom factor
+    double x_min = centerX - (xSpan / 2.0) - padding;
+    double x_max = centerX + (xSpan / 2.0) + padding;
+    double y_min = centerY - (ySpan / 2.0) - padding;
+    double y_max = centerY + (ySpan / 2.0) + padding;
 
     int i, j;
     for (i = 0; i < height; i++) {
@@ -47,7 +44,6 @@ int main ()
             int iteration = 0;
             int max_iteration = 1000;
 
-            // scale x and y values based on the min and max values
             double x_scaled = x_min + j * (x_max - x_min) / (width - 1.0);
             double y_scaled = y_min + i * (y_max - y_min) / (height - 1.0);
 
@@ -58,30 +54,54 @@ int main ()
                 iteration++;
             }
 
-            int r = 0; 
+            int r = 0;
             int g = 0;
             int b = 0;
 
             if (iteration < max_iteration) {
                 int i = iteration % 16;
-                
+
                 r = colorMap[i][0];
                 g = colorMap[i][1];
                 b = colorMap[i][2];
-
-            }
-
-            if ((x_scaled == 0 && y_scaled != 0) || (x_scaled != 0 && y_scaled == 0) || (x_scaled == 0 && y_scaled == 0)) {
-                r = 255;
-                g = 255;
-                b = 255;
             }
 
             writePixel((unsigned char*) image, height, width, i, j, r, g, b);
         }
-                
     }
 
     generateBitmapImage((unsigned char*) image, height, width, imageFileName);
     printf("Image generated!!");
 }
+
+int main() {
+    int height = 1200;
+    int width = 1500;
+    unsigned char image[height][width][BYTES_PER_PIXEL];
+
+    char* imageFileName = (char*) "rand.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, -0.7, -0.375, 3.0, imageFileName);
+
+    char* seahorseFileName = (char*) "seahorseValley.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, -0.747, 0.1, 1/0.005, seahorseFileName);
+
+    // Elephant Valley
+    char* elephantFileName = (char*) "elephantValley.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, 0.275, 0.0, 1/0.01, elephantFileName);
+
+    // Triple Spiral Valley
+    char* tripleSpiralFileName = (char*) "tripleSpiralValley.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, -0.088, 0.654, 1/0.005, tripleSpiralFileName);
+
+    // Mini Mandelbrot
+    char* miniMandelbrotFileName = (char*) "miniMandelbrot.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, -1.768, 0.001, 1/0.001, miniMandelbrotFileName);
+
+    // full Mandelbrot
+    char* fullMandelbrotFileName = (char*) "fullMandelbrot.bmp";
+    drawMandelbrot((unsigned char*) image, height, width, -0.75, 0.0, 0.35, fullMandelbrotFileName);
+
+
+    return 0;
+}
+
