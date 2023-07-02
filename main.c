@@ -22,49 +22,6 @@ int colorMap[16][3] = {
     {106, 52, 3}
 };
 
-// void drawMandelbrotSet(unsigned char* image, int height, int width, int centerX, int centerY) {
-//     double x_min = -2.5; // min value for x
-//     double x_max = 1;    // max value for x
-//     double y_min = -1;   // min value for y
-//     double y_max = 1;    // max value for y
-
-//     int i, j;
-//     for (i = 0; i < height; i++) {
-//         for (j = 0; j < width; j++) {
-//             double x = 0;
-//             double y = 0;
-
-//             int iteration = 0;
-//             int max_iteration = 1000;
-
-//             // scale x and y values based on the min and max values
-//             double x_scaled = x_min + j * (x_max - x_min) / (width - 1.0);
-//             double y_scaled = y_min + i * (y_max - y_min) / (height - 1.0);
-
-//             while (x*x + y*y <= 4 && iteration < max_iteration) {
-//                 double xtemp = x*x - y*y + x_scaled;
-//                 y = 2*x*y + y_scaled;
-//                 x = xtemp;
-//                 iteration++;
-//             }
-
-//             int r = 0; 
-//             int g = 0;
-//             int b = 0;
-
-//             if (iteration < max_iteration) {
-//                 int i = iteration % 16;
-                
-//                 r = colorMap[i][0];
-//                 g = colorMap[i][1];
-//                 b = colorMap[i][2];
-
-//             }
-
-//             if ((x_scaled == 0 && y_scaled != 0) || (x_scaled != 0 && y_scaled == 0) || (x_scaled
-
-
-// }
 
 int main ()
 {
