@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <cuda.h>
 #include <cuda_runtime.h>
+#include <chrono>
+
+extern "C" {
+    void generateBitmapImage(unsigned char* image, int height, int width, char* imageFileName);
+    void writePixel(unsigned char* image, int height, int width, int i, int j, int r, int g, int b);
+}
 
 int colorMap[16][3] = {    
     {60, 30, 15},
@@ -95,7 +101,7 @@ void drawMandelbrot_cuda(unsigned char *image, int height, int width, double cen
 
     // Generate bitmap image
     generateBitmapImage((unsigned char*) image, height, width, imageFileName);
-    printf("Image generated using CUDA: %s\n", imageFileName);
+    // printf("Image generated using CUDA: %s\n", imageFileName);
 
     // Check for any CUDA errors
     cudaError_t error = cudaGetLastError();
@@ -154,7 +160,7 @@ void drawMandelbrot(unsigned char *image, int height, int width, double centerX,
     }
 
     generateBitmapImage((unsigned char*) image, height, width, imageFileName);
-    printf("Image generated!!");
+    // printf("Image generated!!");
 }
 
 int main() {
@@ -165,6 +171,8 @@ int main() {
     // **********************************************************************
     // ************************ LINEAR MANDELBROT **************************
     // **********************************************************************
+
+    auto start_cpu = std::chrono::high_resolution_clock::now();
 
     char* imageFileName = (char*) "output/linear/rand.bmp";
     drawMandelbrot((unsigned char*) image, height, width, -0.7, -0.375, 3.0, imageFileName);
@@ -188,9 +196,15 @@ int main() {
     char* fullMandelbrotFileName = (char*) "output/linear/fullMandelbrot.bmp";
     drawMandelbrot((unsigned char*) image, height, width, -0.75, 0.0, 0.35, fullMandelbrotFileName);
 
+    auto end_cpu = std::chrono::high_resolution_clock::now();
+    auto duration_cpu = std::chrono::duration_cast<std::chrono::milliseconds>(end_cpu - start_cpu).count();
+    printf("CPU time: %d ms\n", duration_cpu);
+
     // **********************************************************************
     // ************************ CUDA MANDELBROT *****************************
     // **********************************************************************
+
+    auto start_cuda = std::chrono::high_resolution_clock::now();
 
     char* imageFileName_cuda = (char*) "output/cuda/rand.bmp";
     drawMandelbrot_cuda((unsigned char*) image, height, width, -0.7, -0.375, 3.0, imageFileName_cuda);
@@ -213,6 +227,10 @@ int main() {
     // full Mandelbrot
     char* fullMandelbrotFileName_cuda = (char*) "output/cuda/fullMandelbrot.bmp";
     drawMandelbrot_cuda((unsigned char*) image, height, width, -0.75, 0.0, 0.35, fullMandelbrotFileName_cuda);
+
+    auto end_cuda = std::chrono::high_resolution_clock::now();
+    auto duration_cuda = std::chrono::duration_cast<std::chrono::milliseconds>(end_cuda - start_cuda).count();
+    printf("CUDA time: %d ms\n", duration_cuda);
 
     return 0;
 }
